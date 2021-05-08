@@ -6,7 +6,8 @@ import {
   DeleteOutlined,
   FileOutlined,
   DownloadOutlined,
-  FileAddOutlined
+  FileAddOutlined,
+  ShareAltOutlined
 } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import NewFolder from '../components/NewFolder';
@@ -15,6 +16,7 @@ import { toast } from 'react-toastify';
 import { getAllFiles, deleteFile, deleteFolder } from '../actions/file';
 import '../User.css';
 import '../App.css';
+import { WhatsappIcon, WhatsappShareButton, EmailIcon, EmailShareButton, TelegramShareButton, TelegramIcon} from "react-share";
 const { SubMenu } = Menu;
 const { Content, Sider } = Layout;
 
@@ -118,6 +120,7 @@ const UserComponent = () => {
 // Begin : Logic for deletion of files and folders
   const [isModalVisibleFile, setModalVisibleFile] = useState(false);
   const [isModalVisibleFolder, setModalVisibleFolder] = useState(false);
+  const [isModalVisibleShare, setModalVisibleShare] = useState(false);
   const [toBeDeletedFile, setToBeDeletedFile] = useState();
   const [toBeDeletedFolder, setToBeDeletedFolder] = useState();
 
@@ -172,6 +175,9 @@ const UserComponent = () => {
           <Menu.Item key="1" onClick={() => { setShowFolder(false); setShowFiles(false) }}>My Profile</Menu.Item>
           <Menu.Item key="2" onClick={() => { setShowFolder(true); setShowFiles(false) }}>My Folders</Menu.Item>
           <Menu.Item key="3" onClick={() => { setShowFolder(false); setShowFiles(true) }}>My Files</Menu.Item>
+          <Button style={{float:"right", margin: "16px 60px 16px 0"}} onClick={() => setModalVisibleShare(true)} >
+            <ShareAltOutlined />
+          </Button>
         </Menu>
         <Layout style={{ minHeight: '100vh' }}>
           <Sider width={200} className="site-layout-background">
@@ -203,7 +209,7 @@ const UserComponent = () => {
             </Menu>
           </Sider>
           <Layout style={{ padding: '0 24px 24px' }}>
-            <Modal title="Delete File" visible={isModalVisibleFile} onOk={()=>deleteFileItem(toBeDeletedFile)} onCancel={()=>setModalVisibleFile(false)}>
+            <Modal title="Delete File" visible={isModalVisibleFile} onOk={() => deleteFileItem(toBeDeletedFile)} onCancel={() => setModalVisibleFile(false)}>
               <div className='form-group' style={{ display: "flex" }}>
                 <p>Are you sure you want to delete this file?</p>
               </div>
@@ -211,6 +217,36 @@ const UserComponent = () => {
             <Modal title="Delete Folder" visible={isModalVisibleFolder} onOk={()=>deleteFolderItem(toBeDeletedFolder)} onCancel={()=>setModalVisibleFolder(false)}>
               <div className='form-group' style={{ display: "flex" }}>
                 <p>Are you sure you want to delete this folder?</p>
+              </div>
+            </Modal>
+            <Modal title="Share" visible={isModalVisibleShare} footer={null} onCancel={()=>setModalVisibleShare(false)}>
+              <div className='form-group' style={{ display: "flex" }}>
+                <div style={{marginRight:"10px"}}>
+                  <WhatsappShareButton
+                    url={String(window.location)}
+                    title={'MedCabinet'}
+                    separator=":: "
+                  >
+                    <WhatsappIcon size={32} round />
+                  </WhatsappShareButton>
+                </div>
+                <div style={{marginRight:"10px"}}>
+                  <EmailShareButton
+                    url={String(window.location)}
+                    subject={'MedCabinet Files'}
+                    body="This is your medCabinet dashboard link! "
+                  >
+                    <EmailIcon size={32} round />
+                  </EmailShareButton>
+                </div>
+                <div>
+                  <TelegramShareButton
+                    url={String(window.location)}
+                    title={'MedCabinet'}
+                  >
+                    <TelegramIcon size={32} round />
+                  </TelegramShareButton>
+                </div>
               </div>
             </Modal>
             < Content style={{ background: '#fff', padding: 24, margin: 0, minHeight: 600 }}>
